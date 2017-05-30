@@ -26,7 +26,6 @@ class Location extends Component {
   }
 
   updateLocation(pos) {
-    console.log(pos);
     this.setState({
       currentLocation: pos.coords
     });
