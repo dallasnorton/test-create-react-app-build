@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import googleMaps from '@google/maps';
 
 const googleMapsClient = require('@google/maps').createClient({
-  key: 'AIzaSyB0m-DzqagTyk0EFlOwZwQCwIZJnT96uSY'
+  key: 'AIzaSyB0m-DzqagTyk0EFlOwZwQCwIZJnT96uSY',
+  Promise: Promise
 });
 
 class LocationMap extends Component {
@@ -80,32 +81,34 @@ class LocationMap extends Component {
 
   updateLocation(pos) {
     this.getReverseGeo(pos);
-    fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${pos.coords.latitude},${pos.coords.longitude}&key=AIzaSyB0m-DzqagTyk0EFlOwZwQCwIZJnT96uSY`)
-      .then((response) => {
-        if (response.status !== 200) {
-          console.log('Looks like there was a problem. Status Code: ' + response.status);
-          return;
-        }
-        // Examine the text in the response  
-        response.json().then(function (data) {
-          console.log('data:', data);
-        });
-      })
-      .catch((err) => {
-        console.log('Fetch Error :-S', err);
-      });
+    // fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${pos.coords.latitude},${pos.coords.longitude}&key=AIzaSyB0m-DzqagTyk0EFlOwZwQCwIZJnT96uSY`)
+    //   .then((response) => {
+    //     if (response.status !== 200) {
+    //       console.log('Looks like there was a problem. Status Code: ' + response.status);
+    //       return;
+    //     }
+    //     // Examine the text in the response  
+    //     response.json().then(function (data) {
+    //       console.log('data:', data);
+    //     });
+    //   })
+    //   .catch((err) => {
+    //     console.log('Fetch Error :-S', err);
+    //   });
 
     this.setState({
       currentLocation: pos.coords,
-      // currentLocationURL: `//www.google.com/maps/embed/v1/view?key=AIzaSyB0m-DzqagTyk0EFlOwZwQCwIZJnT96uSY&zoom=15&center=${pos.coords.latitude},${pos.coords.longitude}`
-      currentLocationURL: `//www.google.com/maps/embed/v1/place?key=AIzaSyB0m-DzqagTyk0EFlOwZwQCwIZJnT96uSY&zoom=12&q=Lehi+Utah,USA`
+      currentLocationURL: `//www.google.com/maps/embed/v1/view?key=AIzaSyB0m-DzqagTyk0EFlOwZwQCwIZJnT96uSY&zoom=15&center=${pos.coords.latitude},${pos.coords.longitude}`
+      // currentLocationURL: `//www.google.com/maps/embed/v1/place?key=AIzaSyB0m-DzqagTyk0EFlOwZwQCwIZJnT96uSY&zoom=12&q=Lehi+Utah,USA`
     });
   }
 
   getReverseGeo(pos) {
-    const query = `?latlng=${pos.coords.latitude},${pos.coords.longitude}`;
-    googleMapsClient.reverseGeocode(query, (results) => {
-      console.log('get reverse geo', results);
+    const query = {latlng: `${pos.coords.latitude},${pos.coords.longitude}`};
+    googleMapsClient.reverseGeocode(query).asPromise().then((response) => {
+      console.log('prom,,ise real', response);
+      if(response.status === 200) {
+      }
     });
   }
 
